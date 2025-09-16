@@ -1,103 +1,139 @@
-import Image from "next/image";
+'use client'
+
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import PageWrapper from '@/components/ui/PageWrapper'
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { data: session, status } = useSession()
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">Loading...</div>
+      </div>
+    )
+  }
+
+  return (
+    <PageWrapper
+      showBackground={true}
+      className="relative overflow-hidden"
+      style={{ background: 'var(--gradient-hero)' }}
+    >
+      <div className="container mx-auto px-6 py-16">
+        <div className="text-center">
+          {/* Hero Section */}
+          <div className="mb-16">
+            <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent" style={{
+              backgroundImage: 'var(--gradient-primary)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              StreamRipple
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
+              Connect your Unreal Engine applications to the web. Stream interactive 3D content directly to browsers with pixel-perfect quality.
+            </p>
+          </div>
+
+          {/* Action Section */}
+          <div className="mb-20">
+            {session ? (
+              <div className="space-y-6">
+                <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-medium" style={{
+                  background: 'var(--gradient-card)',
+                  color: 'var(--color-text-muted)',
+                  boxShadow: 'var(--shadow-card)'
+                }}>
+                  Welcome back, {session.user?.name || session.user?.email}!
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Link
+                    href="/dashboard"
+                    className="group px-8 py-4 rounded-xl text-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+                    style={{
+                      background: 'var(--gradient-primary)',
+                      boxShadow: 'var(--shadow-primary)'
+                    }}
+                  >
+                    <span className="flex items-center gap-2">
+                      Go to Dashboard
+                    </span>
+                  </Link>
+                  <Link
+                    href="/stream"
+                    className="group px-8 py-4 rounded-xl text-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+                    style={{
+                      background: 'var(--gradient-secondary)',
+                      boxShadow: 'var(--shadow-secondary)'
+                    }}
+                  >
+                    <span className="flex items-center gap-2">
+                      Join Stream
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <p className="text-xl font-medium" style={{ color: 'var(--color-text-muted)' }}>
+                  Ready to transform your streaming experience?
+                </p>
+                <Link
+                  href="/auth/signin"
+                  className="inline-flex items-center gap-3 px-10 py-5 rounded-xl text-xl font-bold text-white transition-all duration-300 transform hover:scale-105 hover:-translate-y-2"
+                  style={{
+                    background: 'var(--gradient-primary)',
+                    boxShadow: 'var(--shadow-primary)'
+                  }}
+                >
+                  Start Streaming Now
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              {
+                title: 'Real-time Streaming',
+                description: 'Stream Unreal Engine content with minimal latency and maximum quality',
+                gradient: 'var(--gradient-primary)'
+              },
+              {
+                title: 'Easy Integration',
+                description: 'Simple setup process to connect your UE applications to the web',
+                gradient: 'var(--gradient-secondary)'
+              },
+              {
+                title: 'Session Management',
+                description: 'Create and manage streaming sessions with unique session IDs',
+                gradient: 'var(--gradient-primary)'
+              }
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="group p-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 backdrop-blur-sm"
+                style={{
+                  background: 'var(--gradient-card)',
+                  boxShadow: 'var(--shadow-card)',
+                  border: '1px solid var(--color-border-muted)'
+                }}
+              >
+                <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--color-text-primary)' }}>
+                  {feature.title}
+                </h3>
+                <p className="text-lg leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
+                  {feature.description}
+                </p>
+                <div className="mt-6 h-1 rounded-full transition-all duration-300 group-hover:scale-x-100 scale-x-0" style={{ background: feature.gradient }}></div>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+      </div>
+    </PageWrapper>
+  )
 }
